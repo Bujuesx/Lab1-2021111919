@@ -1,13 +1,12 @@
 graph LR
-  A[学生] -- 预约教师会面 : "1. 登录系统"
-  A -- 浏览空闲时间表 : "2. 浏览教师空闲时间"
-  A -- 发起预约请求 : "3. 选择教师并发起预约"
-  B[教师] -- 接收预约请求通知 : "4. 系统通知教师"
-  B -- 接受/拒绝预约 : "5. 教师选择接受或拒绝"
-  A -- 确认通知 : "6. 教师接受预约"
-  A -- 拒绝通知 : "7. 教师拒绝预约"
-  A -- 重新选择教师 : "3a. 如果找不到合适时间"
-  B -- 系统自动取消 : "5a. 教师未在规定时间响应"
-  style 学生 fill:#f9f,stroke:#333,stroke-width:2px
-  style 教师 fill:#f9f,stroke:#333,stroke-width:2px
-  style 预约教师会面 fill:#ccf,stroke:#f66,stroke-width:2px
+  actor Student as A
+  actor Teacher as B
+
+  A -->|Browses| UC1(预约教师会面)
+  B -->|Receives| UC1
+  UC1 -->|Sends Request| B
+  UC1 -->|Receives Response| A
+  UC1 -.->|Accepts Request| A: Confirm Notification
+  UC1 -.->|Rejects Request| A: Reject Notification
+  UC1 -.->|No Suitable Time| A: Reselect Teacher
+  UC1 -.->|No Response in Time| A: System Cancels Request
