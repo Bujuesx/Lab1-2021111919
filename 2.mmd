@@ -1,10 +1,14 @@
 graph LR
-  A[学生] -- 预约教师 : "1. 登录系统"
-  A -- 预约教师 : "2. 浏览空闲时间表"
-  A -- 预约教师 : "3. 选择时间段预约"
-  A -- 预约教师 : "4. 系统记录预约"
-  A -- 教师 : "5. 教师收到通知"
+  A[学生] -- 预约教师会面 : "1. 登录系统"
+  A -- 预约教师会面 : "2. 浏览空闲时间表"
+  A -- 预约教师会面 : "3. 发起预约请求"
+  B[教师] -- 预约教师会面 : "4. 接收预约请求通知"
+  B -- 预约教师会面 : "5. 接受/拒绝预约"
+  A -- 确认通知 : "6. 教师接受预约"
+  A -- 拒绝通知 : "7. 教师拒绝预约"
+  A -- 重新选择教师 : "3a. 找不到合适时间"
+  A -- 系统自动取消 : "5a. 教师未在规定时间响应"
   classDef default fill:#f9f,stroke:#333,stroke-width:2px;
   classDef actor fill:#ccf,stroke:#f66,stroke-width:2px;
-  class actor A;
-  class 预约教师 default;
+  class actor A, B;
+  class 预约教师会面 default;
