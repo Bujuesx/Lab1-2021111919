@@ -6,8 +6,8 @@ classDiagram
     }
 
     class 管理员 {
-        +查看教师列表() : List[教师]
-        +删除教师(教师ID: int) : boolean
+        +查看教师信息() : List[教师信息界面类]
+        +删除教师信息(教师ID: int) : boolean
     }
 
     class 教师 {
@@ -18,8 +18,9 @@ classDiagram
         -电话: String
         -地址: String
         -登录密码: String
-        +添加空闲时间(时间段: 空闲时间) : boolean
-        +更新状态(状态: String) : boolean
+        -空闲时间列表: List[空闲时间]
+        +添加空闲时间(空闲时间: AvailabilitySlot) : boolean
+        +修改状态(状态: String) : boolean
         +查看空闲时间() : List[空闲时间]
     }
 
@@ -28,18 +29,28 @@ classDiagram
         -姓名: String
         -邮箱: String
         +查看教师空闲时间() : List[空闲时间]
-        +预约(时间段: 空闲时间) : boolean
+        +预约教师(空闲时间: AvailabilitySlot) : boolean
     }
 
     class 预约 {
         -预约ID: int
         -学生: 学生
         -教师: 教师
-        -预约时间: DateTime
+        -时间: DateTime
         -状态: String
         +批准() : boolean
         +拒绝() : boolean
         +取消() : boolean
+    }
+
+    class 空闲时间 {
+        -时间段ID: int
+        -教师: 教师
+        -开始时间: DateTime
+        -结束时间: DateTime
+        -状态: String
+        +预约() : boolean
+        +释放() : boolean
     }
 
     class 评论 {
@@ -50,50 +61,40 @@ classDiagram
         -评分: int
     }
 
-    class 空闲时间 {
-        -时间段ID: int
-        -教师: 教师
-        -开始时间: DateTime
-        -结束时间: DateTime
-        -状态: String
-        +预约(学生: 学生) : boolean
-        +拒绝() : boolean
-    }
-
     class 登录界面类 {
-        +登录(用户: 用户) : void
+        +登录(用户: 用户) : boolean
     }
 
     class 查看教师信息界面类 {
-        +查看教师列表() : List[教师]
+        +显示教师信息(教师: 教师) : void
     }
 
     class 添加教师信息界面类 {
-        +添加教师(教师: 教师) : void
+        +添加教师信息(教师: 教师) : boolean
     }
 
     class 删除教师信息界面类 {
-        +删除教师(教师ID: int) : void
+        +删除教师信息(教师ID: int) : boolean
     }
 
     class 查看学生预约界面类 {
-        +查看预约列表() : List[预约]
+        +显示学生预约(预约: 预约) : void
     }
 
     class 增加空闲时间界面类 {
-        +添加时间段(时间段: 空闲时间) : void
+        +增加空闲时间(教师: 教师, 空闲时间: AvailabilitySlot) : boolean
     }
 
     class 教师修改状态界面类 {
-        +更新状态(教师: 教师, 状态: String) : void
+        +修改教师状态(教师: 教师, 状态: String) : boolean
     }
 
     class 教师空闲时间查看界面类 {
-        +查看空闲时间() : List[空闲时间]
+        +查看教师空闲时间(教师: 教师) : List[空闲时间]
     }
 
     class 学生查看空闲时间界面类 {
-        +查看空闲时间() : List[空闲时间]
+        +查看教师空闲时间(教师: 教师) : List[空闲时间]
     }
 
     %% 关系
@@ -101,7 +102,18 @@ classDiagram
     用户 <|-- 教师
     用户 <|-- 学生
 
-    空闲时间 "1" --> "*" 预约 : 包含
-    教师 "1" --> "*" 空闲时间 : 拥有
-    学生 "1" --> "0..*" 预约 : 拥有
-    预约 "*" --> "0..*" 评论 : 包含
+    教师 "1" -- "0..*" 空闲时间 : 有空闲时间
+    学生 "1" -- "0..*" 预约 : 有预约
+    教师 "1" -- "*" 预约 : 有预约
+    预约 "0..*" -- "0..*" 评论 : 包含评论
+
+    %% 界面类与实体类的关联
+    登录界面类 -- 用户 : 用于登录
+    查看教师信息界面类 -- 教师 : 展示教师信息
+    添加教师信息界面类 -- 教师 : 添加教师信息
+    删除教师信息界面类 -- 教师 : 删除教师信息
+    查看学生预约界面类 -- 学生 : 展示学生预约信息
+    增加空闲时间界面类 -- 教师 : 允许教师添加空闲时间
+    教师修改状态界面类 -- 教师 : 允许教师修改状态
+    教师空闲时间查看界面类 -- 教师 : 展示教师空闲时间
+    学生查看空闲时间界面类 -- 教师 : 允许学生查看教师空闲时间
