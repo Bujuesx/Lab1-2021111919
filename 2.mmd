@@ -1,66 +1,13 @@
 classDiagram
-    class LoginBoundary {
-        +login(user: User) : void
+    class User {
+        -username: String
+        -password: String
+        +login() : boolean
     }
 
-    class ViewTeacherInfoBoundary {
+    class Admin {
         +viewTeachers() : List[Teacher]
-    }
-
-    class AddTeacherInfoBoundary {
-        +addTeacher(teacher: Teacher) : void
-    }
-
-    class DeleteTeacherInfoBoundary {
-        +deleteTeacherById(teacherId: int) : void
-    }
-
-    class ViewStudentAppointmentBoundary {
-        +viewAppointments() : List[Appointment]
-    }
-
-    class AddAvailabilitySlotBoundary {
-        +addSlot(slot: AvailabilitySlot) : void
-    }
-
-    class TeacherStatusUpdateBoundary {
-        +updateStatus(status: String) : void
-    }
-
-    class TeacherAvailabilityViewBoundary {
-        +viewAvailability() : List[AvailabilitySlot]
-    }
-
-    class StudentAvailabilityViewBoundary {
-        +viewAvailability() : List[AvailabilitySlot]
-    }
-
-    class AddTeacherController {
-        +handleAddTeacher() : void
-    }
-
-    class DeleteTeacherController {
-        +handleDeleteTeacher() : void
-    }
-
-    class AddAvailabilityController {
-        +handleAddAvailability() : void
-    }
-
-    class UpdateAvailabilityStatusController {
-        +handleUpdateAvailabilityStatus() : void
-    }
-
-    class UpdateAppointmentStatusController {
-        +handleUpdateAppointmentStatus() : void
-    }
-
-    class FindAvailabilityController {
-        +handleFindAvailability() : void
-    }
-
-    class AppointmentController {
-        +handleAppointment() : void
+        +deleteTeacher(teacherId: int) : boolean
     }
 
     class Teacher {
@@ -71,13 +18,17 @@ classDiagram
         -phoneNumber: String
         -address: String
         -loginPassword: String
-        -availabilitySlots: List[AvailabilitySlot]
+        +addAvailability(slot: AvailabilitySlot) : boolean
+        +updateStatus(status: String) : boolean
+        +viewAvailability() : List[AvailabilitySlot]
     }
 
     class Student {
         -studentId: int
         -name: String
         -email: String
+        +viewTeacherAvailability() : List[AvailabilitySlot]
+        +makeAppointment(slot: AvailabilitySlot) : boolean
     }
 
     class Appointment {
@@ -86,6 +37,9 @@ classDiagram
         -teacher: Teacher
         -appointmentTime: DateTime
         -status: String
+        +approve() : boolean
+        +deny() : boolean
+        +cancel() : boolean
     }
 
     class Comment {
@@ -102,35 +56,52 @@ classDiagram
         -startTime: DateTime
         -endTime: DateTime
         -status: String
+        +reserve(student: Student) : boolean
+        +deny() : boolean
     }
 
-    class Admin {
-        -adminId: int
-        -username: String
-        -password: String
+    class LoginBoundary {
+        +login(user: User) : void
+    }
+
+    class ViewTeacherInfoBoundary {
+        +viewTeachers() : List[Teacher]
+    }
+
+    class AddTeacherInfoBoundary {
+        +addTeacher(teacher: Teacher) : void
+    }
+
+    class DeleteTeacherInfoBoundary {
+        +deleteTeacher(teacherId: int) : void
+    }
+
+    class ViewStudentAppointmentBoundary {
+        +viewAppointments() : List[Appointment]
+    }
+
+    class AddAvailabilitySlotBoundary {
+        +addSlot(slot: AvailabilitySlot) : void
+    }
+
+    class TeacherStatusUpdateBoundary {
+        +updateStatus(teacher: Teacher, status: String) : void
+    }
+
+    class TeacherAvailabilityViewBoundary {
+        +viewAvailability() : List[AvailabilitySlot]
+    }
+
+    class StudentAvailabilityViewBoundary {
+        +viewAvailability() : List[AvailabilitySlot]
     }
 
     %% Relationships
-    LoginBoundary --|> AddTeacherInfoBoundary : extends
-    LoginBoundary --|> ViewTeacherInfoBoundary : extends
-    LoginBoundary --|> DeleteTeacherInfoBoundary : extends
-    LoginBoundary --|> ViewStudentAppointmentBoundary : extends
-    LoginBoundary --|> AddAvailabilitySlotBoundary : extends
-    LoginBoundary --|> TeacherStatusUpdateBoundary : extends
-    LoginBoundary --|> TeacherAvailabilityViewBoundary : extends
-    LoginBoundary --|> StudentAvailabilityViewBoundary : extends
+    User <|-- Admin
+    User <|-- Teacher
+    User <|-- Student
 
-    AddTeacherInfoBoundary --|> AddTeacherController : uses
-    DeleteTeacherInfoBoundary --|> DeleteTeacherController : uses
-    AddAvailabilitySlotBoundary --|> AddAvailabilityController : uses
-    TeacherStatusUpdateBoundary --|> UpdateAvailabilityStatusController : uses
-    ViewStudentAppointmentBoundary --|> UpdateAppointmentStatusController : uses
-    TeacherAvailabilityViewBoundary --|> FindAvailabilityController : uses
-    StudentAvailabilityViewBoundary --|> FindAvailabilityController : uses
-    AppointmentController --|> AddAvailabilityController : uses
-
-    %% Compositions
-    Teacher "1" o-- "1..*" AvailabilitySlot : hasSlots
-    Student "1" o-- "0..*" Appointment : hasAppointments
-    Appointment "1" o-- "1" Teacher : withTeacher
-    Appointment "1" o-- "1" Student : byStudent
+    AvailabilitySlot "1" --> "0..*" Appointment : contains
+    Teacher "1" --> "1..*" AvailabilitySlot : has
+    Student "1" --> "0..*" Appointment : has
+    Appointment "0..*" --> "0..*" Comment : includes
