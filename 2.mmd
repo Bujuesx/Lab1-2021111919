@@ -1,107 +1,107 @@
 classDiagram
-    class User {
-        -username: String
-        -password: String
-        +login() : boolean
+    class 用户 {
+        -用户名: String
+        -密码: String
+        +登录() : boolean
     }
 
-    class Admin {
-        +viewTeachers() : List[Teacher]
-        +deleteTeacher(teacherId: int) : boolean
+    class 管理员 {
+        +查看教师列表() : List[教师]
+        +删除教师(教师ID: int) : boolean
     }
 
-    class Teacher {
-        -teacherId: int
-        -name: String
-        -subject: String
-        -email: String
-        -phoneNumber: String
-        -address: String
-        -loginPassword: String
-        +addAvailability(slot: AvailabilitySlot) : boolean
-        +updateStatus(status: String) : boolean
-        +viewAvailability() : List[AvailabilitySlot]
+    class 教师 {
+        -教师ID: int
+        -姓名: String
+        -科目: String
+        -邮箱: String
+        -电话: String
+        -地址: String
+        -登录密码: String
+        +添加空闲时间(时间段: 空闲时间) : boolean
+        +更新状态(状态: String) : boolean
+        +查看空闲时间() : List[空闲时间]
     }
 
-    class Student {
-        -studentId: int
-        -name: String
-        -email: String
-        +viewTeacherAvailability() : List[AvailabilitySlot]
-        +makeAppointment(slot: AvailabilitySlot) : boolean
+    class 学生 {
+        -学生ID: int
+        -姓名: String
+        -邮箱: String
+        +查看教师空闲时间() : List[空闲时间]
+        +预约(时间段: 空闲时间) : boolean
     }
 
-    class Appointment {
-        -appointmentId: int
-        -student: Student
-        -teacher: Teacher
-        -appointmentTime: DateTime
-        -status: String
-        +approve() : boolean
-        +deny() : boolean
-        +cancel() : boolean
+    class 预约 {
+        -预约ID: int
+        -学生: 学生
+        -教师: 教师
+        -预约时间: DateTime
+        -状态: String
+        +批准() : boolean
+        +拒绝() : boolean
+        +取消() : boolean
     }
 
-    class Comment {
-        -commentId: int
-        -student: Student
-        -teacher: Teacher
-        -content: String
-        -rating: int
+    class 评论 {
+        -评论ID: int
+        -学生: 学生
+        -教师: 教师
+        -内容: String
+        -评分: int
     }
 
-    class AvailabilitySlot {
-        -slotId: int
-        -teacher: Teacher
-        -startTime: DateTime
-        -endTime: DateTime
-        -status: String
-        +reserve(student: Student) : boolean
-        +deny() : boolean
+    class 空闲时间 {
+        -时间段ID: int
+        -教师: 教师
+        -开始时间: DateTime
+        -结束时间: DateTime
+        -状态: String
+        +预约(学生: 学生) : boolean
+        +拒绝() : boolean
     }
 
-    class LoginBoundary {
-        +login(user: User) : void
+    class 登录界面类 {
+        +登录(用户: 用户) : void
     }
 
-    class ViewTeacherInfoBoundary {
-        +viewTeachers() : List[Teacher]
+    class 查看教师信息界面类 {
+        +查看教师列表() : List[教师]
     }
 
-    class AddTeacherInfoBoundary {
-        +addTeacher(teacher: Teacher) : void
+    class 添加教师信息界面类 {
+        +添加教师(教师: 教师) : void
     }
 
-    class DeleteTeacherInfoBoundary {
-        +deleteTeacher(teacherId: int) : void
+    class 删除教师信息界面类 {
+        +删除教师(教师ID: int) : void
     }
 
-    class ViewStudentAppointmentBoundary {
-        +viewAppointments() : List[Appointment]
+    class 查看学生预约界面类 {
+        +查看预约列表() : List[预约]
     }
 
-    class AddAvailabilitySlotBoundary {
-        +addSlot(slot: AvailabilitySlot) : void
+    class 增加空闲时间界面类 {
+        +添加时间段(时间段: 空闲时间) : void
     }
 
-    class TeacherStatusUpdateBoundary {
-        +updateStatus(teacher: Teacher, status: String) : void
+    class 教师修改状态界面类 {
+        +更新状态(教师: 教师, 状态: String) : void
     }
 
-    class TeacherAvailabilityViewBoundary {
-        +viewAvailability() : List[AvailabilitySlot]
+    class 教师空闲时间查看界面类 {
+        +查看空闲时间() : List[空闲时间]
     }
 
-    class StudentAvailabilityViewBoundary {
-        +viewAvailability() : List[AvailabilitySlot]
+    class 学生查看空闲时间界面类 {
+        +查看空闲时间() : List[空闲时间]
     }
 
-    %% Relationships
-    User <|-- Admin
-    User <|-- Teacher
-    User <|-- Student
+    %% 关系
+    用户 <|-- 管理员
+    用户 <|-- 教师
+    用户 <|-- 学生
 
-    AvailabilitySlot "1" --> "0..*" Appointment : contains
-    Teacher "1" --> "1..*" AvailabilitySlot : has
-    Student "1" --> "0..*" Appointment : has
-    Appointment "0..*" --> "0..*" Comment : includes
+    空闲时间 "1" --> "*" 预约 : 包含
+    教师 "1" --> "*" 空闲时间 : 拥有
+    学生 "1" --> "0..*" 预约 : 拥有
+    预约 "*" --> "0..*" 评论 : 包含
